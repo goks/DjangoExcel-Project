@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+
+    <h4>Search</h4>
+
+     <div class="row">
+    <form class="col s12" method="get" >
+      <div class="row">
+        {{ form.non_field_errors }}
+        <div class="input-field col s6">
+          
+          {{ form.code }}
+          <!-- <input placeholder="eg: 18SSTT" id="search_value" type="text" class="validate"> -->
+          <label for="{{ form.code.id_for_label }}">Item name or Code</label>
+        </div>
+      </div>
+        <button class="btn waves-effect waves-light" type="submit" >Search 
+      <i class="material-icons right">search</i>
+    </button>
+
+     {% if value == 0 %}
+     </br></br>
+     <h6>Search returned no result.</h6>
+      {% endif %}
+
+    
+    {% if items %}
+    </br></br>
+            <h4>Results</h4>
+
+            <ul class="collapsible" data-collapsible="accordion">
+
+            {% for item in items %}
+
+             
+                <li>
+                  <div class="collapsible-header"><i class="material-icons">filter_drama</i>{{ item.Description }}</div>
+                  <div class="collapsible-body"><p>
+                                                        <a href="{{ item.get_absolute_url }}"><b>Code: </b> {{ item.Code }}  </br></a>     
+                                                        <b>Unit: </b> {{ item.Unit }}  </br>
+                                                        <b>Price3: </b> {{ item.Price3 }}  </br>
+                                                </p>        
+
+                  </div>
+                </li>
+
+                   
+                    
+               
+            {% empty %}
+                <p>No results found.</p>
+            {% endfor %}
+
+        <!--     {% if page.has_previous or page.has_next %}
+                <div>
+                    {% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; Previous{% if page.has_previous %}</a>{% endif %}
+                    |
+                    {% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}Next &raquo;{% if page.has_next %}</a>{% endif %}
+                </div>
+            {% endif %}
+         -->
+            
+        {% endif %}
+
+     </form>
+  </div>  
+    
+</div>
+
+
+
+
+{% endblock content %}

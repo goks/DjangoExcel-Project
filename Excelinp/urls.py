@@ -1,10 +1,9 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 
 from Excelinp import views
 
-urlpatterns = patterns(
-    '',
-    url(r'^$', views.upload, name='uplink'),
+urlpatterns = [
+    url(r'^$', views.search, name='search'),
     url(r'^download/(.*)', views.download, name="download"),
     url(r'^download_attachment/(.*)/(.*)', views.download_as_attachment,
         name="download_attachment"),
@@ -12,5 +11,8 @@ urlpatterns = patterns(
     url(r'^parse/(.*)', views.parse, name="parse"),
     url(r'^import/', views.import_data, name="import"),
     url(r'^import_sheet/', views.import_sheet, name="import_sheet"),
-    url(r'^export/(.*)', views.export_data, name="export")
-)
+    url(r'^export/(.*)', views.export_data, name="export"),
+    url(r'^home/',  views.upload, name='uplink'),
+    url(r'^products/(?P<pk>\w+)/$', views.itemDescription, name='itemDescription'),
+    url(r'^search/', views.search,name='search'),
+]

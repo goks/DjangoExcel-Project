@@ -1,0 +1,18 @@
+nav
+{
+	background-color:#ff5722;
+}
+.btn
+{
+	
+	background-color: #448aff;
+}
+#resultRow{
+	padding-top: 30px;
+}
+
+#resultContainer{
+	height: 100%;
+	background-color: antiquewhite;
+	margin-top: 20px;
+}

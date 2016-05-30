@@ -4,8 +4,13 @@ from django.http import HttpResponseBadRequest, JsonResponse, HttpResponse
 from django import forms
 from django.template import RequestContext
 import django_excel as excel
-from Excelinp.models import Question, Choice
+from Excelinp.models import Question, Choice, Item
+from Excelinp.forms import searchForm
 import pyexcel.ext.xls
+from django.db.models import Q
+from django.http import Http404
+from .forms import customHaystackSearchForm
+from haystack.query import SearchQuerySet
 # import pyexcel.ext.xlsx
 # import pyexcel.ext.ods3
 
@@ -74,11 +79,16 @@ def import_data(request):
             return row
         if form.is_valid():
             request.FILES['file'].save_book_to_database(
-                models=[Question, Choice],
-                initializers=[None, choice_func],
+                models=[
+                # Question, Choice,
+                 Item],
+                initializers=[
+                # None, choice_func,
+                None],
                 mapdicts=[
-                    ['question_text', 'pub_date', 'slug'],
-                    ['question', 'choice_text', 'votes']]
+                    # ['question_text', 'pub_date', 'slug'],
+                    # ['question', 'choice_text', 'votes'],
+                    ['ID','Code','Description','Unit','Price3']]
             )
             return HttpResponse("OK", status=200)
         else:
@@ -131,7 +141,7 @@ def parse(request, data_struct_type):
             return JsonResponse({"result": filehandle.get_array()})
         elif data_struct_type == "dict":
             return JsonResponse(filehandle.get_dict())
-        elif data_struct_type == "records":
+        elif data_struct_type == "records": 
             return JsonResponse({"result": filehandle.get_records()})
         elif data_struct_type == "book":
             return JsonResponse(filehandle.get_book().to_dict())
@@ -140,4 +150,46 @@ def parse(request, data_struct_type):
         else:
             return HttpResponseBadRequest()
     else:
-        return HttpResponseBadRequest() 	   
+        return HttpResponseBadRequest()
+
+def search(request):
+    # form_class = searchForm
+    # if request.method == "POST":
+    #     form = form_class(data=request.POST)
+    #     if form.is_valid():
+    #         return HttpResponse('WORKING!!!',status=200)
+    #     # else:
+    #     #     return HttpResponseBadRequest()    
+    # return render_to_response('upload_form.html',
+    #                           {'form': form_class},
+    #                           context_instance=RequestContext(request))
+    
+    # form = customHaystackSearchForm(request.GET)
+    # searchresults = form.search()
+    # return render(request, 'search2.html', {'form' : form})
+    form = customHaystackSearchForm(request.GET)
+    searchresults = form.search()
+    try:
+        sTerm = request.GET['code']
+    except:
+        return render(request, 'search2.html', {'form' : form})
+    results = SearchQuerySet().auto_query(sTerm)
+    items = []
+    for r in results:
+        items.append(r.object)
+    if(items==[]):
+        val=0
+    else:
+        val=1        
+    return render(request, 'search2.html', {'form' : form, 'items': items, 'value': val})
+
+
+def itemDescription(request,pk):
+    try:
+        item = Item.objects.get(ID=pk)
+    except:
+        raise Http404("Item does not exist")    
+    context = {'item':item}
+    # print(item.Description)
+    return render(request, 'result.html', context)
+

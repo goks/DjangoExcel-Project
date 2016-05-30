@@ -1,22 +1,21 @@
-<html>
+<!DOCTYPE html>
+<html >
 <head>
-    <title>{{title}}</title>
+    <meta charset="UTF-8">
+    <title>Search | Gokul</title>    
+    <!-- <link rel="stylesheet" href="css/style.css"> -->
 </head>
 <body>
-    <h1>{{header}}</h1>
 
-    {% if form.errors %}
-        <p style="color: red;">
-            Please correct the error{{ form.errors|pluralize }} below.
-        </p>
-    {% endif %}
 
-    <form action="" enctype="multipart/form-data"  method="post">
-        <table>
-            {{ form.as_table }}
-        </table>
-        {% csrf_token %}
-        <input type="submit" value="Submit">
-    </form>
+
+{% block content %}
+<h1>Contact</h1>
+<form role="form" action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit</button>
+</form>
+{% endblock %}
+
 </body>
-</html>
